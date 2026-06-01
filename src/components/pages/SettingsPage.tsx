@@ -61,10 +61,12 @@ export function SettingsPage({
 
   async function onExportJson() {
     exportJson(await listRecords());
+    window.alert("已生成 JSON 文件。iPhone 上可在 Safari 下载中查看，也可以到“文件 App > 下载”查找。");
   }
 
   async function onExportCsv() {
     exportCsv(await listRecords());
+    window.alert("已生成 CSV 文件。iPhone 上可在 Safari 下载中查看，也可以到“文件 App > 下载”查找。");
   }
 
   async function onCopyMarkdown() {

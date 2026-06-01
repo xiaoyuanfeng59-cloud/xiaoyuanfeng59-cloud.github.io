@@ -1,26 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
-import { timeline } from "./lib/framework";
 import { getSettings, saveSettings } from "./db/indexedDb";
 import type { AppSettings, ReminderSetting } from "./types/record";
-import { toLocalDate } from "./utils/date";
 import { dismissReminderToday, findDueReminder, skipReminderToday, snoozeReminder } from "./services/notifications";
-import { BackfillPage } from "./components/pages/BackfillPage";
 import { DataPage } from "./components/pages/DataPage";
 import { SettingsPage } from "./components/pages/SettingsPage";
-import { TodayPage } from "./components/pages/TodayPage";
+import { StatePage } from "./components/pages/StatePage";
 import { ThemeDevPanel } from "./components/ThemeDevPanel";
+import { TimePage } from "./components/pages/TimePage";
+import { toLocalDate } from "./utils/date";
 
-type Tab = "today" | "backfill" | "data" | "settings";
+type Tab = "time" | "state" | "data" | "settings";
 
 const tabs: Array<{ id: Tab; label: string; icon: string }> = [
-  { id: "today", label: "今日", icon: "●" },
-  { id: "backfill", label: "补记", icon: "↺" },
+  { id: "time", label: "时间", icon: "●" },
+  { id: "state", label: "状态", icon: "↺" },
   { id: "data", label: "数据", icon: "⌁" },
   { id: "settings", label: "设置", icon: "⚙" },
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<Tab>("today");
+  const [activeTab, setActiveTab] = useState<Tab>("time");
+  const [recordDate, setRecordDate] = useState(toLocalDate());
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [dueReminder, setDueReminder] = useState<ReminderSetting | null>(null);
 
@@ -46,11 +46,11 @@ export default function App() {
   }
 
   const page = useMemo(() => {
-    if (activeTab === "today") return <TodayPage date={toLocalDate()} items={timeline} />;
-    if (activeTab === "backfill") return <BackfillPage items={timeline} />;
+    if (activeTab === "time") return <TimePage date={recordDate} onDateChange={setRecordDate} />;
+    if (activeTab === "state") return <StatePage date={recordDate} onDateChange={setRecordDate} />;
     if (activeTab === "data") return <DataPage />;
     return <SettingsPage settings={settings} setSettings={setSettings} />;
-  }, [activeTab, settings]);
+  }, [activeTab, recordDate, settings]);
 
   return (
     <div className="app-shell">
@@ -61,7 +61,7 @@ export default function App() {
             <p>{dueReminder.message}</p>
           </div>
           <div className="reminder-actions">
-            <button onClick={() => setActiveTab("today")} type="button">
+            <button onClick={() => setActiveTab("time")} type="button">
               去记录
             </button>
             <button onClick={() => updateReminder(snoozeReminder(dueReminder, 10))} type="button">

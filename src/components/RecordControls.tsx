@@ -37,33 +37,50 @@ export function EventButton({ item, record, onPatch, backfillMode }: CommonProps
   const done = Boolean(value);
   const editValue = toDateTimeLocalValue(value) || defaultDateTimeLocal(record.date);
 
-  return (
-    <section className={`event-row ${done ? "done" : ""}`}>
-      {!done && backfillMode ? (
+  if (backfillMode) {
+    return (
+      <section className={`event-row ${done ? "done" : ""}`}>
         <div className="event-backfill">
           <div>
             <span>{item.label}</span>
-            <strong>可直接补时间</strong>
+            <strong>{done ? formatTime(value) : "可直接补时间"}</strong>
           </div>
           <div className="event-backfill-actions">
             <button onClick={() => onPatch({ events: { [item.key]: new Date().toISOString() } })} type="button">
               记为现在
             </button>
-            <button onClick={() => setEditing(true)} type="button">
-              选择时间
+            <button onClick={() => setEditing((current) => !current)} type="button">
+              {editing ? "收起时间" : "选择时间"}
             </button>
+            {done && (
+              <button onClick={() => onPatch({ events: { [item.key]: undefined } })} type="button">
+                撤销
+              </button>
+            )}
           </div>
+          {editing && (
+            <input
+              className="input"
+              type="datetime-local"
+              value={editValue}
+              onChange={(event) => onPatch({ events: { [item.key]: fromDateTimeLocalValue(event.target.value) } })}
+            />
+          )}
         </div>
-      ) : (
-        <button
-          className="event-main"
-          onClick={() => onPatch({ events: { [item.key]: new Date().toISOString() } })}
-          type="button"
-        >
-          <span>{item.label}</span>
-          <strong>{done ? formatTime(value) : "点一下记录现在"}</strong>
-        </button>
-      )}
+      </section>
+    );
+  }
+
+  return (
+    <section className={`event-row ${done ? "done" : ""}`}>
+      <button
+        className="event-main"
+        onClick={() => onPatch({ events: { [item.key]: new Date().toISOString() } })}
+        type="button"
+      >
+        <span>{item.label}</span>
+        <strong>{done ? formatTime(value) : "点一下记录现在"}</strong>
+      </button>
       {(done || editing) && (
         <div className="row-actions">
           <button className="ghost-button" onClick={() => setEditing((current) => !current)} type="button">
