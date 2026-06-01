@@ -425,6 +425,71 @@ button {
   gap: 8px;
 }
 
+.state-section-nav {
+  display: grid;
+  gap: 10px;
+}
+
+.section-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.section-tab {
+  position: relative;
+  min-height: 44px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 8%, transparent);
+  border-radius: 8px;
+  background: var(--theme-panel);
+  color: var(--theme-muted);
+  font-weight: 760;
+}
+
+.section-tab.active {
+  border-color: color-mix(in srgb, var(--theme-accent) 42%, transparent);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+}
+
+.section-tab.done::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--theme-success-text);
+}
+
+.section-stepper {
+  display: grid;
+  grid-template-columns: 82px 1fr 82px;
+  align-items: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 8%, transparent);
+  border-radius: 8px;
+  background: var(--theme-panel);
+}
+
+.section-stepper strong {
+  text-align: center;
+}
+
+.section-stepper button {
+  min-height: 38px;
+  border-radius: 8px;
+  background: var(--theme-surface-soft);
+  color: var(--theme-text);
+}
+
+.section-stepper button:disabled {
+  opacity: 0.38;
+}
+
 .metric {
   display: grid;
   gap: 5px;
